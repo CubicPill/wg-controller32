@@ -15,7 +15,7 @@ TYPE = 0x17
 PACKET_LENGTH = 64
 
 
-class AT8000UDPPacket:
+class ControllerUDPPacket:
     def __init__(self, device_sn, function_id, data: bytes, serial_number=0):
         assert 0 <= device_sn <= 0xFFFFFFFF
         assert 0 <= function_id <= 0xFF
