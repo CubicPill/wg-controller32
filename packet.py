@@ -1,4 +1,4 @@
-'''
+"""
 typedef struct struPacketShort {
     unsigned char      type;                  //类型
     unsigned char      functionID;            //功能号
@@ -8,7 +8,8 @@ typedef struct struPacketShort {
     unsigned int       sequenceId;            //数据包流水号
     unsigned char      extern_data[20];       //第二版本 扩展20字节
 } *pPacketShort, PacketShort;    //报文
-'''
+"""
+from function_def import Function
 
 TYPE = 0x17
 PACKET_LENGTH = 64
@@ -30,10 +31,9 @@ class AT8000UDPPacket:
         if not self._bytes:
             pkt_array = [0] * PACKET_LENGTH
             pkt_array[0] = TYPE
-            pkt_array[1] = 0x94
+            pkt_array[1] = self.function_id
             pkt_array[4:8] = [(self.device_sn >> (8 * i)) & 0xFF for i in range(4)]
             pkt_array[8:40] = list(self.data)
             pkt_array[40:44] = [(self.serial_number >> (8 * i)) & 0xFF for i in range(4)]
-
             self._bytes = bytes(pkt_array)
         return self._bytes
