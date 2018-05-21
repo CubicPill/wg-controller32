@@ -15,5 +15,12 @@ def send_packet_and_get_response(ip, port, packet_data) -> bytes:
 
 
 class UDPClient:
-    def __init__(self):
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    def __init__(self, ip, port, device_sn):
+        self._socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self._ip = ip
+        self._port = port
+        self._device_sn = device_sn
+        self._serial = 0
+
+    def connect(self):
+        pass
