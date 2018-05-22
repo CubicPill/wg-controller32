@@ -59,5 +59,10 @@ class UDPClient:
     def request(self, function_id, data, recv=True):
         packet = ControllerUDPPacket(self._device_sn, function_id, data, serial_number=self._serial)
         returned_data = self._request(packet.get_bytes(), recv)
-
         self._serial += 1
+        return returned_data
+
+    def request_raw(self, packet_data, recv=True):
+        returned_data = self._request(packet_data, recv)
+        self._serial += 1
+        return returned_data
