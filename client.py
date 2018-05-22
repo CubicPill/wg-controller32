@@ -1,4 +1,5 @@
 import socket
+from packet import ControllerUDPPacket
 
 
 def send_packet_and_get_response(ip, port, packet_data) -> bytes:
@@ -47,6 +48,16 @@ class UDPClient:
     def timeout(self, timeout):
         self._socket.settimeout(timeout)
 
-    def _request(self, packet_data):
+    def _request(self, packet_data, recv):
         self._socket.sendto(packet_data, (self._ip, self._port))
-        return self._socket.recv(1024)
+        if recv:
+            return self._socket.recv(1024)
+
+    def add_handler(self, callback: callable):
+        pass
+
+    def request(self, function_id, data, recv=True):
+        packet = ControllerUDPPacket(self._device_sn, function_id, data, serial_number=self._serial)
+        returned_data = self._request(packet.get_bytes(), recv)
+
+        self._serial += 1

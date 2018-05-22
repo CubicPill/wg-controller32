@@ -1,6 +1,7 @@
-from enum import IntEnum
+from enum import IntEnum, unique
 
 
+@unique
 class Function(IntEnum):
     SEARCH_CONTROLLER = 0x94
     SET_CONTROLLER_IP = 0x96
@@ -22,3 +23,15 @@ class Function(IntEnum):
     SET_RECV_SERVER_IP_PORT = 0x90
     GET_RECV_SERVER_IP_PORT = 0x92
     ADD_PRIVILEGE_SMALL_TO_LARGE = 0x56
+
+    def __repr__(self):
+        return '<Controller Function {}: {}>'.format(self._name_, hex(self.value))
+
+
+def lookup_by_number(value: int):
+    if type(value) is Function:
+        return value
+    for name, member in Function.__members__.items():
+        if member.value == value:
+            return member
+    raise ValueError('Function id {} does not exist'.format(hex(value)))
