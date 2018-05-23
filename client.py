@@ -1,5 +1,7 @@
 import socket
 from packet import ControllerUDPPacket
+from queue import Queue
+from threading import Thread
 
 
 def send_packet_and_get_response(ip, port, packet_data) -> bytes:
@@ -23,6 +25,11 @@ class UDPClient:
         self._port = port
         self._device_sn = device_sn
         self._serial = serial
+        self._handlers = list()
+        self._queue = Queue()
+
+    def _run(self):
+        pass
 
     @property
     def ip(self):
