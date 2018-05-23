@@ -1,7 +1,5 @@
 import socket
 from packet import ControllerUDPPacket
-from queue import Queue
-from threading import Thread
 
 
 def send_packet_and_get_response(ip, port, packet_data) -> bytes:
@@ -25,11 +23,6 @@ class UDPClient:
         self._port = port
         self._device_sn = device_sn
         self._serial = serial
-        self._handlers = list()
-        self._queue = Queue()
-
-    def _run(self):
-        pass
 
     @property
     def ip(self):
@@ -58,15 +51,16 @@ class UDPClient:
     def _request(self, packet_data, recv):
         self._socket.sendto(packet_data, (self._ip, self._port))
         if recv:
-            return self._socket.recv(1024)
-
-    def add_handler(self, callback: callable):
-        pass
+            returned_data = self._socket.recv(1024)
+            return returned_data
+        return None
 
     def request(self, function_id, data, recv=True):
+        data += bytes([0] * (32 - len(data)))
         packet = ControllerUDPPacket(self._device_sn, function_id, data, serial_number=self._serial)
-        returned_data = self._request(packet.get_bytes(), recv)
-        self._serial += 1
+        returned_data = self.request_raw(packet.get_bytes(), recv)
+        if recv:
+            return ControllerUDPPacket.from_bytes(returned_data)
         return returned_data
 
     def request_raw(self, packet_data, recv=True):

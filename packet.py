@@ -17,12 +17,13 @@ PACKET_LENGTH = 64
 
 def parse_packet(packet_bytes: bytes):
     assert len(packet_bytes) == PACKET_LENGTH
-    assert packet_bytes[0] == TYPE
+    _type = packet_bytes[0]
+    assert (_type == TYPE) or (packet_bytes[1] == Function.QUERY_CONTROLLER_STATUS)
     function_id = lookup_by_number(packet_bytes[1])
     device_sn = sum([v << (8 * i) for i, v in enumerate(packet_bytes[4:8])])
     data = packet_bytes[8:40]
     serial_number = sum([v << (8 * i) for i, v in enumerate(packet_bytes[40:44])])
-    return device_sn, function_id, data, serial_number
+    return _type, device_sn, function_id, data, serial_number
 
 
 class ControllerUDPPacket:
@@ -75,7 +76,7 @@ class ControllerUDPPacket:
 
     @staticmethod
     def from_bytes(packet_bytes: bytes):
-        device_sn, function_id, data, serial_number = parse_packet(packet_bytes)
+        _type, device_sn, function_id, data, serial_number = parse_packet(packet_bytes)
         return ControllerUDPPacket(device_sn, function_id, data, serial_number)
 
     def get_bytes(self) -> bytes:
