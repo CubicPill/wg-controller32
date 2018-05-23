@@ -29,6 +29,11 @@ class Function(IntEnum):
 
 
 def lookup_by_number(value: int):
+    """
+    lookup function enum object by function id
+    :param value: function id
+    :return: Function object
+    """
     if type(value) is Function:
         return value
     for name, member in Function.__members__.items():

@@ -56,6 +56,13 @@ class UDPClient:
         return None
 
     def request(self, function_id, data, recv=True):
+        """
+        send request to controller
+        :param function_id:
+        :param data: bytes, will be automatically zero-filled to 32 bytes
+        :param recv: if wait for the response
+        :return: a ControllerUDPPacket object containing response data or None
+        """
         data += bytes([0] * (32 - len(data)))
         packet = ControllerUDPPacket(self._device_sn, function_id, data, serial_number=self._serial)
         returned_data = self.request_raw(packet.get_bytes(), recv)
@@ -64,6 +71,13 @@ class UDPClient:
         return returned_data
 
     def request_raw(self, packet_data, recv=True):
+        """
+        send request with given packet, packet length should be 64 bytes
+        :param packet_data:
+        :param recv:
+        :return: packet bytes
+        """
+        assert len(packet_data) == 64
         returned_data = self._request(packet_data, recv)
         self._serial += 1
         return returned_data

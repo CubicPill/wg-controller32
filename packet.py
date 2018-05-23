@@ -16,9 +16,13 @@ PACKET_LENGTH = 64
 
 
 def parse_packet(packet_bytes: bytes):
+    """
+    parse packet
+    :param packet_bytes: must be 64 bytes
+    :return: type of packet (typically 0x17), device serial, function, data, serial number of packet
+    """
     assert len(packet_bytes) == PACKET_LENGTH
     _type = packet_bytes[0]
-    assert (_type == TYPE) or (packet_bytes[1] == Function.QUERY_CONTROLLER_STATUS)
     function_id = lookup_by_number(packet_bytes[1])
     device_sn = sum([v << (8 * i) for i, v in enumerate(packet_bytes[4:8])])
     data = packet_bytes[8:40]
