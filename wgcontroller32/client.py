@@ -1,5 +1,5 @@
 import socket
-from packet import ControllerUDPPacket
+from wgcontroller32.packet import ControllerUDPPacket
 
 
 def send_packet_and_get_response(ip, port, packet_data) -> bytes:
@@ -63,7 +63,8 @@ class UDPClient:
         :param recv: if wait for the response
         :return: a ControllerUDPPacket object containing response data or None
         """
-        data += bytes([0] * (32 - len(data)))
+        assert len(data) <= 32
+        data += bytes(32 - len(data))
         packet = ControllerUDPPacket(self._device_sn, function_id, data, serial_number=self._serial)
         returned_data = self.request_raw(packet.get_bytes(), recv)
         if recv:

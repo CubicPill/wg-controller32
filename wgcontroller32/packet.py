@@ -9,7 +9,7 @@ typedef struct struPacketShort {
     unsigned char      extern_data[20];       //第二版本 扩展20字节
 } *pPacketShort, PacketShort;    //报文
 """
-from function_def import Function, lookup_by_number
+from wgcontroller32.function_def import Function, lookup_by_number
 
 TYPE = 0x17
 PACKET_LENGTH = 64
@@ -34,11 +34,11 @@ class ControllerUDPPacket:
     def __init__(self, device_sn: int, function_id: Function or int, data: bytes, serial_number: int = 0):
         assert 0 <= device_sn <= 0xFFFFFFFF
         assert 0 <= function_id <= 0xFF
-        assert len(data) == 32
+        assert len(data) <= 32
         assert 0 <= serial_number <= 0xFFFFFFFF
         self._device_sn = device_sn
         self._function = lookup_by_number(function_id)
-        self._data = data
+        self._data = data + bytes(32 - len(data))
         self._serial_number = serial_number
         self._bytes = b''
 
