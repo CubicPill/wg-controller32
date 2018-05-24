@@ -2,7 +2,7 @@ from enum import IntEnum, unique
 
 
 @unique
-class Function(IntEnum):
+class ControllerFunctions(IntEnum):
     SEARCH_CONTROLLER = 0x94
     SET_CONTROLLER_IP = 0x96
     QUERY_CONTROLLER_STATUS = 0x20
@@ -34,9 +34,9 @@ def lookup_by_number(value: int):
     :param value: function id
     :return: Function object
     """
-    if type(value) is Function:
+    if type(value) is ControllerFunctions:
         return value
-    for name, member in Function.__members__.items():
+    for name, member in ControllerFunctions.__members__.items():
         if member.value == value:
             return member
     raise ValueError('Function id {} does not exist'.format(hex(value)))

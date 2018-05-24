@@ -1,5 +1,6 @@
 import socket
-from wgcontroller32.packet import ControllerUDPPacket
+from wgcontroller32.packet import ControllerUDPPacket, parse_packet
+from wgcontroller32.function_def import ControllerFunctions
 
 
 def send_packet_and_get_response(ip, port, packet_data) -> bytes:
@@ -13,6 +14,20 @@ def send_packet_and_get_response(ip, port, packet_data) -> bytes:
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(packet_data, (ip, port))
     return sock.recv(1024)
+
+
+def get_device_sn(ip, port):
+    """
+    query device for SN with ip and port
+    :param ip:
+    :param port:
+    :return: device sn
+    """
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    packet = ControllerUDPPacket(0, ControllerFunctions.SEARCH_CONTROLLER, b'').get_bytes()
+    sock.sendto(packet, (ip, port))
+    _type, device_sn, function_id, data, serial_number = parse_packet(sock.recv(1024))
+    return device_sn
 
 
 class UDPClient:
