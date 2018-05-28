@@ -31,11 +31,16 @@ def get_device_sn(ip, port):
 
 
 class UDPClient:
-    def __init__(self, ip, port, device_sn, timeout=4, serial=0):
+    def __init__(self, ip, port, device_sn=0, timeout=4, serial=0):
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self._socket.settimeout(timeout)
         self._ip = ip
         self._port = port
+        if device_sn == 0:
+            # if not provided, contact controller to get SN
+            _, device_sn, _, _, _ = parse_packet(
+                send_packet_and_get_response(ip, port, ControllerUDPPacket(0, ControllerFunctions.SEARCH_CONTROLLER,
+                                                                           b'').get_bytes()))
         self._device_sn = device_sn
         self._serial = serial
 
