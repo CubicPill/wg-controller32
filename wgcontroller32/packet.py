@@ -93,3 +93,9 @@ class ControllerUDPPacket:
             pkt_array[40:44] = [(self._serial_number >> (8 * i)) & 0xFF for i in range(4)]
             self._bytes = bytes(pkt_array)
         return self._bytes
+
+    def to_hex(self) -> str:
+        ret = ''
+        for b in self.get_bytes():
+            ret += format(b, '0>2x')
+        return ret
