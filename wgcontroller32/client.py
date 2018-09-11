@@ -3,15 +3,17 @@ from wgcontroller32.packet import ControllerUDPPacket, parse_packet
 from wgcontroller32.function_def import ControllerFunctions
 
 
-def send_packet_and_get_response(ip, port, packet_data) -> bytes:
+def send_packet_and_get_response(ip, port, packet_data, timeout=4) -> bytes:
     """
     send a single packet and return the response
     :param ip:
     :param port:
     :param packet_data:
+    :param timeout:
     :return:
     """
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.settimeout(timeout)
     sock.sendto(packet_data, (ip, port))
     return sock.recv(1024)
 
@@ -40,7 +42,7 @@ class UDPClient:
             # if not provided, contact controller to get SN
             _, device_sn, _, _, _ = parse_packet(
                 send_packet_and_get_response(ip, port, ControllerUDPPacket(0, ControllerFunctions.SEARCH_CONTROLLER,
-                                                                           b'').get_bytes()))
+                                                                           b'', timeout).get_bytes()))
         self._device_sn = device_sn
         self._serial = serial
 
