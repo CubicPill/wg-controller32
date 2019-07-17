@@ -95,7 +95,5 @@ class ControllerUDPPacket:
         return self._bytes
 
     def to_hex(self) -> str:
-        ret = ''
-        for b in self.get_bytes():
-            ret += format(b, '0>2x')
+        ret = ' '.join([format(b, '0>2x') for b in self.get_bytes()])
         return ret
